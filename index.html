@@ -7,7 +7,7 @@
     body {
       font-family: sans-serif;
       text-align: center;
-      padding-top: 50px;
+      padding: 30px;
       transition: background-color 0.3s, color 0.3s;
       background-color: #f7f7f7;
       color: #333;
@@ -28,6 +28,16 @@
       font-size: 24px;
       font-weight: bold;
       color: white;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: pop 0.3s ease forwards;
+    }
+
+    @keyframes pop {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .set {
@@ -41,30 +51,40 @@
     }
 
     button {
-      margin: 15px 10px;
-      font-size: 18px;
-      padding: 10px 20px;
+      margin: 10px 5px;
+      font-size: 16px;
+      padding: 10px 18px;
+    }
+
+    #controls {
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      font-size: 16px;
+      padding: 5px;
+      margin-left: 10px;
     }
   </style>
 </head>
 <body>
   <h1>랜덤 번호 생성기</h1>
+
+  <div id="controls">
+    세트 개수:
+    <input type="number" id="setCount" value="5" min="1" max="20">
+    <button onclick="generate()">번호 생성</button>
+    <button onclick="toggleTheme()">테마 전환</button>
+    <button onclick="toggleSort()">번호 정렬</button>
+  </div>
+
   <div id="numbers"></div>
-  <br>
-  <button onclick="generate()">번호 생성</button>
-  <button onclick="toggleTheme()">테마 전환</button>
 
   <script>
-    function generateSet() {
-      const set = [];
-      while (set.length < 6) {
-        const n = Math.floor(Math.random() * 45) + 1;
-        if (!set.includes(n)) {
-          set.push(n);
-        }
-      }
-      return set.sort((a, b) => a - b);
-    }
+    let isDark = false;
+    let isSorted = false;
+    let originalSets = []; // 원래 순서 저장용
 
     function getColor(n) {
       if (n <= 10) return '#e74c3c';      // 빨강
@@ -74,22 +94,51 @@
       else return '#3498db';              // 파랑
     }
 
-    function generate() {
-      let html = '';
-      for (let i = 0; i < 5; i++) {
-        const set = generateSet();
-        html += `<div class="set">${set.map(n => 
-          `<span class="number" style="background:${getColor(n)}">${n}</span>`
-        ).join('')}</div>`;
+    function generateSet() {
+      const set = [];
+      while (set.length < 6) {
+        const n = Math.floor(Math.random() * 45) + 1;
+        if (!set.includes(n)) {
+          set.push(n);
+        }
       }
-      document.getElementById('numbers').innerHTML = html;
+      return set;
     }
 
-    let isDark = false;
+    function render(sets, sorted = false) {
+      const numbersDiv = document.getElementById('numbers');
+      numbersDiv.innerHTML = '';
+      sets.forEach(set => {
+        const displayed = sorted ? [...set].sort((a, b) => a - b) : set;
+        const html = displayed.map(n =>
+          `<span class="number" style="background:${getColor(n)}">${n}</span>`
+        ).join('');
+        const div = document.createElement('div');
+        div.className = 'set';
+        div.innerHTML = html;
+        numbersDiv.appendChild(div);
+      });
+    }
+
+    function generate() {
+      const count = parseInt(document.getElementById('setCount').value);
+      const sets = [];
+      for (let i = 0; i < count; i++) {
+        sets.push(generateSet());
+      }
+      originalSets = sets;
+      isSorted = false;
+      render(sets);
+    }
 
     function toggleTheme() {
       isDark = !isDark;
       document.body.classList.toggle('dark-mode', isDark);
+    }
+
+    function toggleSort() {
+      isSorted = !isSorted;
+      render(originalSets, isSorted);
     }
   </script>
 </body>
