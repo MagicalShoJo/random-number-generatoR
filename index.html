@@ -8,8 +8,16 @@
       font-family: sans-serif;
       text-align: center;
       padding-top: 50px;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, color 0.3s;
+      background-color: white;
+      color: black;
     }
+
+    .dark-mode {
+      background-color: #121212;
+      color: white;
+    }
+
     .number {
       display: inline-block;
       margin: 8px;
@@ -19,6 +27,7 @@
       font-size: 24px;
       border-radius: 10px;
     }
+
     button {
       margin: 15px 10px;
       font-size: 18px;
@@ -31,7 +40,7 @@
   <div id="numbers"></div>
   <br>
   <button onclick="generate()">번호 생성</button>
-  <button onclick="changeBackground()">배경색 바꾸기</button>
+  <button onclick="toggleTheme()">테마 전환</button>
 
   <script>
     function generate() {
@@ -47,12 +56,11 @@
       document.getElementById('numbers').innerHTML = output;
     }
 
-    const colors = ['#ffffff', '#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5'];
-    let colorIndex = 0;
+    let isDark = false;
 
-    function changeBackground() {
-      colorIndex = (colorIndex + 1) % colors.length;
-      document.body.style.backgroundColor = colors[colorIndex];
+    function toggleTheme() {
+      isDark = !isDark;
+      document.body.classList.toggle('dark-mode', isDark);
     }
   </script>
 </body>
