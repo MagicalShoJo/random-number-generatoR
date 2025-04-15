@@ -9,8 +9,8 @@
       text-align: center;
       padding-top: 50px;
       transition: background-color 0.3s, color 0.3s;
-      background-color: white;
-      color: black;
+      background-color: #f7f7f7;
+      color: #333;
     }
 
     .dark-mode {
@@ -20,16 +20,24 @@
 
     .number {
       display: inline-block;
-      margin: 5px;
-      padding: 10px 15px;
-      background: #3498db;
+      margin: 8px;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      border-radius: 50%;
+      font-size: 24px;
+      font-weight: bold;
       color: white;
-      font-size: 20px;
-      border-radius: 10px;
     }
 
     .set {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .dark-mode .set {
+      border-bottom: 1px solid #444;
     }
 
     button {
@@ -58,11 +66,21 @@
       return set.sort((a, b) => a - b);
     }
 
+    function getColor(n) {
+      if (n <= 10) return '#e74c3c';      // 빨강
+      else if (n <= 20) return '#e67e22'; // 주황
+      else if (n <= 30) return '#f1c40f'; // 노랑
+      else if (n <= 40) return '#2ecc71'; // 초록
+      else return '#3498db';              // 파랑
+    }
+
     function generate() {
       let html = '';
       for (let i = 0; i < 5; i++) {
         const set = generateSet();
-        html += `<div class="set">${set.map(n => `<span class="number">${n}</span>`).join('')}</div>`;
+        html += `<div class="set">${set.map(n => 
+          `<span class="number" style="background:${getColor(n)}">${n}</span>`
+        ).join('')}</div>`;
       }
       document.getElementById('numbers').innerHTML = html;
     }
